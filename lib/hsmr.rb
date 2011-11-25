@@ -27,6 +27,11 @@ module HSMR
     @key.unpack('H4'*(@key.length/2)).join(" ").upcase
   end
 
+  def parity
+    'even' unless odd_parity?
+    'odd'
+  end
+
   def odd_parity?
     # http://csrc.nist.gov/publications/nistpubs/800-67/SP800-67.pdf
     #
@@ -47,6 +52,19 @@ module HSMR
         #puts "#{o} is #{o.to_i(16).to_s(2).count('1').to_i } - odd" 
       end
     end      
+  end
+
+  def self.encrypt(data, key)
+    unless key.length == 8 || key.length == 16 || key.length ==24
+      raise TypeError, "key length should be 8, 16 or 24 bytes" 
+    end
+    des = OpenSSL::Cipher::Cipher.new("des-cbc") if key.length == 8
+    des = OpenSSL::Cipher::Cipher.new("des-ede-cbc") if key.length == 16
+    des = OpenSSL::Cipher::Cipher.new("des-ede3-cbc") if key.length == 24
+
+    des.encrypt
+    des.key=key.key
+    to_hex( des.update(to_binary(data)) )
   end
 
   def set_odd_parity
@@ -81,7 +99,38 @@ module HSMR
     @key = working.join.unpack('a2'*(working.length)).map{|x| x.hex}.pack('c'*(working.length))
   end
 
+  def xor(other)
+    other=Component.new(other) if other.is_a? String
+    #other=Component.new(other.to_s) if other.is_a? Key
+
+    unless (other.is_a? Component ) or ( other.is_a? Key )
+      raise TypeError, "Component argument expected" 
+    end
+    
+    @a = @key.unpack('C2'*(@key.length/2))
+    @b = other.key.unpack('C2'*(other.length/2))
+    
+    resultant = Key.new( @a.zip(@b).
+                        map {|x,y| x^y}.
+                        map {|z| z.to_s(16) }.
+                        map {|c| c.length == 1 ? '0'+c : c }.
+                        join.upcase )
+    resultant
+  end
+  
+  def xor!(_key)
+    @key = xor(_key).key
+  end
+
   ## Module Methods
+
+  def self.to_binary(data)
+    data.unpack('a2'*(data.length/2)).map{|x| x.hex}.pack('c'*(data.length/2))
+  end
+
+  def self.to_hex(data)
+    data.unpack('H*').first.upcase
+  end
 
   def self.encrypt_pin(key, pin)
     @pin = pin.unpack('a2'*(pin.length/2)).map{|x| x.hex}.pack('c'*(pin.length/2))
@@ -150,8 +199,23 @@ module HSMR
     decimalise(result, :visa)[0..3].join
   end
 
-  def self.cvv(key_left, key_right, account, exp, service_code)
-    
+  def self.cvv(key_a, key_b, pan, exp, svc)
+    # http://www.m-sinergi.com/hairi/doc.html
+    # For CVV2 use SVC 000
+    # For CVV3 SVC is 502
+    # For iCVV use SVC of 999
+    #
+    #raise ArgumentError "PAN" 
+
+    data1 = pan
+    data2 = "#{exp}#{svc}".ljust(16, '0')
+
+    result = encrypt(data1, key_a)
+    result = result.xor(data2)
+
+    result1 = encrypt(result, HSMR::Key.new(key_a.to_s + key_b.to_s) )
+   
+    return HSMR.decimalise( result1 )[0,3].join
   end
   
   def self.xor(component1, *rest)
@@ -186,10 +250,16 @@ class String
     if other.empty?
       self
     else
-      a1        = self.unpack("c*")
-      a2        = other.unpack("c*")
-      a2 *= 2   while a2.length < a1.length
-      a1.zip(a2).collect{|c1,c2| c1^c2}.pack("c*")
+      a1        = self.unpack("a2"*(self.length/2)).map {|x| x.hex }
+      a2        = other.unpack("a2"*(other.length/2)).map {|x| x.hex }
+      #a2 *= 2   while a2.length < a1.length
+
+      #a1.zip(a2).collect{|c1,c2| c1^c2}.pack("C*")
+      a1.zip(a2).
+      map {|x,y| x^y}.
+      map {|z| z.to_s(16) }.
+      map {|c| c.length == 1 ? '0'+c : c }.
+      join.upcase      
     end
   end
 end

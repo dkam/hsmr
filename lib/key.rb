@@ -4,7 +4,6 @@ module HSMR
 
     attr_reader :key
     attr_reader :length
-    attr_reader :parity
 
     def initialize(init=nil, length=DOUBLE)
       return nil if (init.is_a? Array ) && (init.length == 0) 
@@ -30,21 +29,28 @@ module HSMR
       @length = @key.length
     end 
 
-    def xor(other)
-      other=Component.new(other) if other.is_a? String
-      other=Component.new(other.key) if other.is_a? Key
-      
-      raise TypeError, "Component argument expected" unless other.is_a? Component
-      
-      @a = @key.unpack('C2'*(@key.length/2))
-      @b = other.component.unpack('C2'*(@key.length/2))
-      
-      resultant = Key.new( @a.zip(@b).map {|x,y| x^y}.map {|z| z.to_s(16) }.join.upcase )
-    end
-    
-    def xor!(_key)
-      @key = xor(_key).key
-    end
+    #def xor(other)
+    #  other=Component.new(other) if other.is_a? String
+    #  other=Component.new(other.to_s) if other.is_a? Key
+#
+#      puts "other is #{other.class} - #{other.key}"
+#      
+#      raise TypeError, "Component argument expected" unless other.is_a? Component
+#      
+#      @a = @key.unpack('C2'*(@key.length/2))
+#      @b = other.component.unpack('C2'*(other.length/2))
+#      
+#      resultant = Key.new( @a.zip(@b).
+#                          map {|x,y| x^y}.
+#                          map {|z| z.to_s(16) }.
+#                          map {|c| c.length == 1 ? '0'+c : c }.
+#                          join.upcase )
+#      resultant
+#    end
+#    
+#    def xor!(_key)
+#      @key = xor(_key).key
+#    end
 
   end
 end

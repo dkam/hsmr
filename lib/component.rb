@@ -3,7 +3,6 @@ module HSMR
     include HSMR
     attr_reader :key
     attr_reader :length
-    attr_reader :parity
 
     def component
       @key
@@ -22,15 +21,18 @@ module HSMR
       @key = @key
     end
     
-    def xor(other)
-      other = Component.new(other) unless other.is_a? Component
-      raise TypeError, "Component argument expected" unless other.is_a? Component
-      
-      @a = @key.unpack('C2'*(@key.length/2))
-      @b = other.component.unpack('C2'*(other.component.length/2))
-      result = @a.zip(@b).map {|x,y| x^y}.map {|z| z.to_s(16) }.join.upcase
-      Key.new(result)
-    end
+#    def xor(other)
+#      other = Component.new(other) unless other.is_a? Component
+#      raise TypeError, "Component argument expected" unless other.is_a? Component
+#      
+#      @a = @key.unpack('C2'*(@key.length/2))
+#      @b = other.component.unpack('C2'*(other.component.length/2))
+#
+#      #result = @a.zip(@b).map {|x,y| x^y}.map {|z| z.to_s(16) }.join.upcase
+#      result = @a.zip(@b).map {|x,y| x^y}.map {|z| z.to_s(16) }.map {|c| c.length == 1 ? '0'+c : c }.join.upcase
+#
+#      Key.new(result)
+#    end
 
   end
 end

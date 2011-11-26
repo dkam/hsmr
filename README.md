@@ -36,6 +36,17 @@ Usage
     pvv = HSMR.pvv(key, pan, pvki, pin)
     => "0798"
 
+Features
+---------
+
+* Key / Componet features
+** Create Keys and Components
+** XOR Keys and Components together
+** Find Key Check Values (kcv)
+** Determine and change key parity
+
+
+
 Author
 ==========
 

@@ -1,8 +1,8 @@
 require 'openssl'
+require 'component'
+require 'key'
 
 module HSMR
-  VERSION = '0.0.1'
-  
   # Key Lengths
   SINGLE=64
   DOUBLE=128

@@ -40,17 +40,26 @@ Features
 ---------
 
 * Key / Componet features
-** Create Keys and Components
-** XOR Keys and Components together
-** Find Key Check Values (kcv)
-** Determine and change key parity
+  * Create Keys and Components
+  * XOR Keys and Components together
+  * Find Key Check Values (kcv)
+  * Determine and change key parity
+* Encrypt / Decrypt PIN Blocks
+* Generate IBM3624 PINs
+* Generate PVV, CVV & CVV2 values
 
 
+Development
+-----------
+
+* Source hosted on GitHub.
+* Report issues on GitHub Issues.
+* Pull requests are awesome! Please include test::unit tests
 
 Author
 ==========
 
-Dan Milne, http://da.nmilne.com
+Dan Milne, http://da.nmilne.com, http://booko.com.au
 
 Copyright
 ----------

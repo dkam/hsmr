@@ -68,7 +68,7 @@ module HSMR
   end
 
   def set_odd_parity
-    return true if self.odd_parity? == true
+    return self if self.odd_parity? == true
         
     working=@key.unpack('H2'*(@key.length))
     working.each_with_index do |o,i|
@@ -97,6 +97,7 @@ module HSMR
       end
     end
     @key = working.join.unpack('a2'*(working.length)).map{|x| x.hex}.pack('c'*(working.length))
+    return self
   end
 
   def xor(other)

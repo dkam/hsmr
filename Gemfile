@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in blahz.gemspec
+# Specify your gem's dependencies in hsmr.gemspec
 gemspec
 
 #group :development do

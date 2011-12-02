@@ -1,6 +1,6 @@
 require 'openssl'
-require 'component'
-require 'key'
+require 'hsmr/component'
+require 'hsmr/key'
 
 module HSMR
   # Key Lengths

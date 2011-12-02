@@ -1,7 +1,2 @@
 require "test/unit"
-#require "./lib/hsmr"
-#require "./lib/hsmr/key"
-#require "./lib/hsmr/component"
 require "hsmr"
-#require "hsmr/key"
-#require "hsmr/component"

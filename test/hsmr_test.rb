@@ -78,7 +78,7 @@ class TestHSMR < Test::Unit::TestCase
 
   def test_should_detect_odd_parity_in_a_key
     odd_key  = HSMR::Key.new("41A2AC14A90C583741A2AC14A90C5837")
-    assert_false odd_key.odd_parity?
+    assert odd_key.odd_parity? == false
   end
   
   def test_should_set_double_length_key_parity_to_odd
@@ -93,7 +93,7 @@ class TestHSMR < Test::Unit::TestCase
   
   def test_should_detect_odd_parity_in_a_component
     odd_component  = HSMR::Component.new("41A2AC14A90C583741A2AC14A90C5837")
-    assert_false odd_component.odd_parity?
+    assert odd_component.odd_parity? == false
   end
   
   def test_should_set_double_length_component_parity_to_odd

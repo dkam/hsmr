@@ -130,6 +130,7 @@ class TestHSMR < Test::Unit::TestCase
     kl = "0123456789ABCDEF" 
     kr = "FEDCBA1234567890"
 
+
     #HSMR.cvv(kl, kr, "4509494222049051", "0907", "1010")
   end
 

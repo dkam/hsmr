@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "hsmr/version"
 
 Gem::Specification.new do |s|
-  s.name        = "HSMR"
+  s.name        = "hsmr"
   s.version     = HSMR::VERSION
   s.authors     = ["Dan Milne"]
   s.email       = ["d@nmilne.com"]

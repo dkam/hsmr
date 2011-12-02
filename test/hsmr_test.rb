@@ -1,7 +1,8 @@
 require 'test_helper'
 
 class TestHSMR < Test::Unit::TestCase
-  def generate_a_component 
+
+  def test_generate_a_component 
 	  component_1 = HSMR::Component.new(nil, HSMR::SINGLE)
 	  component_2 = HSMR::Component.new(nil, HSMR::DOUBLE)
 	  component_3 = HSMR::Component.new(nil, HSMR::TRIPLE)	  	
@@ -11,7 +12,7 @@ class TestHSMR < Test::Unit::TestCase
     assert_equal 24, component_3.length
   end
 
-  def caclulation_of_single_length_component_KCV_values
+  def test_caclulation_of_single_length_component_KCV_values
     component_1 = HSMR::Component.new("6DBF C180 4A01 5BAD")
     assert_equal "029E60", component_1.kcv
 
@@ -43,7 +44,7 @@ class TestHSMR < Test::Unit::TestCase
     assert_equal  "D9F7B3", component_10.kcv
   end
 
-  def should_calculate_double_length_key_KCV_values
+  def test_should_calculate_double_length_key_KCV_values
     key_1 = HSMR::Key.new("ADE3 9B38 0DBC DF38 AE02 AECE 64B3 4373")
     assert_equal "3002D5", key_1.kcv
 
@@ -75,12 +76,12 @@ class TestHSMR < Test::Unit::TestCase
     assert_equal "50E3F8", key_10.kcv
   end
 
-  def should_detect_odd_parity_in_a_key
+  def test_should_detect_odd_parity_in_a_key
     odd_key  = HSMR::Key.new("41A2AC14A90C583741A2AC14A90C5837")
-    assert_false odd_key.odd_parity?
+    refute odd_key.odd_parity?
   end
   
-  def should_set_double_length_key_parity_to_odd
+  def test_should_set_double_length_key_parity_to_odd
     odd_key  = HSMR::Key.new("41A2AC14A90C583741A2AC14A90C5837")
 
     odd_key.set_odd_parity
@@ -90,12 +91,12 @@ class TestHSMR < Test::Unit::TestCase
     assert_equal odd_key.key, even_key.key
   end
   
-  def should_detect_odd_parity_in_a_component
+  def test_should_detect_odd_parity_in_a_component
     odd_component  = HSMR::Component.new("41A2AC14A90C583741A2AC14A90C5837")
-    assert_false odd_component.odd_parity?
+    refute odd_component.odd_parity?
   end
   
-  def should_set_double_length_component_parity_to_odd
+  def test_should_set_double_length_component_parity_to_odd
     odd_component  = HSMR::Component.new("41A2AC14A90C583741A2AC14A90C5837")
     
     odd_component.set_odd_parity
@@ -105,7 +106,7 @@ class TestHSMR < Test::Unit::TestCase
     assert_equal odd_component.component, even_component.component
   end
 
-  def converting_string_to_ascii_works
+  def test_converting_string_to_ascii_works
     key_string = "E57A DF5B CEA7 F42A DFD9 E554 07A2 F891"
     key = HSMR::Key.new(key_string)
 
@@ -117,7 +118,7 @@ class TestHSMR < Test::Unit::TestCase
     assert_equal comp.to_s, key_string 
   end
 
-  def tests_CVC_CVC2_calculations
+  def test_CVC_CVC2_calculations
     # Component 1      Component 2      PAN              EXP  SCode  CVC
     # 1234567890ABCDEF FEDCBA1234567890 5656565656565656 1010 ___ 922
     # 1234567890ABCDEF FEDCBA1234567890 5656565656565656 1010 000 922

@@ -1,4 +1,4 @@
-HSMR
+HSMR [![Build Status](https://secure.travis-ci.org/dkam/hsmr.png)](http://travis-ci.org/dkam/hsmr)
 ===========
 
 HSMR is a collection of cryptographic commands usually implemented on a HSM (Hardware Security Module). These 

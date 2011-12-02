@@ -77,35 +77,32 @@ class TestHSMR < Test::Unit::TestCase
   end
 
   def test_should_detect_odd_parity_in_a_key
-    odd_key  = HSMR::Key.new("41A2AC14A90C583741A2AC14A90C5837")
-    assert odd_key.odd_parity? == false
-  end
-  
-  def test_should_set_double_length_key_parity_to_odd
-    odd_key  = HSMR::Key.new("41A2AC14A90C583741A2AC14A90C5837")
+    parity=[]
+    #            Odd              Even
+    parity << %W{ 0123456789ABCDEF 0022446688AACCEE }
+    parity << %W{ FEDCBA9876543210 FFDDBB9977553311 }
+    parity << %W{ 89ABCDEF01234567 88AACCEE00224466 }
+    parity << %W{ 40A2AD15A80D583740A2AD15A80D5837 41A2AC14A90C583741A2AC14A90C5837 }
 
-    odd_key.set_odd_parity
-    
-    even_key = HSMR::Key.new("40A2AD15A80D583740A2AD15A80D5837")
-    
-    assert_equal odd_key.key, even_key.key
-  end
-  
-  def test_should_detect_odd_parity_in_a_component
-    odd_component  = HSMR::Component.new("41A2AC14A90C583741A2AC14A90C5837")
-    assert odd_component.odd_parity? == false
-  end
-  
-  def test_should_set_double_length_component_parity_to_odd
-    odd_component  = HSMR::Component.new("41A2AC14A90C583741A2AC14A90C5837")
-    
-    odd_component.set_odd_parity
-    
-    even_component = HSMR::Component.new("40A2AD15A80D583740A2AD15A80D5837")
-        
-    assert_equal odd_component.component, even_component.component
-  end
+    # Test determining the parity
+    parity.each do |pair|
+      assert_equal true,  HSMR::Key.new(pair[0]).odd_parity?
+      assert_equal false, HSMR::Key.new(pair[1]).odd_parity?
 
+      assert_equal true,  HSMR::Component.new(pair[0]).odd_parity?
+      assert_equal false, HSMR::Component.new(pair[1]).odd_parity?
+    end
+
+    # Test converting even to odd parity
+    parity.each do |pair|
+      odd_key = HSMR::Key.new(pair[0])
+      even_key = HSMR::Key.new(pair[0])
+      
+      even_key.set_odd_parity
+      assert_equal odd_key,  odd_key
+    end
+  end
+  
   def test_converting_string_to_ascii_works
     key_string = "E57A DF5B CEA7 F42A DFD9 E554 07A2 F891"
     key = HSMR::Key.new(key_string)
@@ -119,15 +116,16 @@ class TestHSMR < Test::Unit::TestCase
   end
 
   def test_CVC_CVC2_calculations
-    # Component 1      Component 2      PAN              EXP  SCode  CVC
-    # 1234567890ABCDEF FEDCBA1234567890 5656565656565656 1010 ___ 922
-    # 1234567890ABCDEF FEDCBA1234567890 5656565656565656 1010 000 922
-    # 1234567890ABCDEF FEDCBA1234567890 5683739237489383838 1010 000 367
-    # 1234567890ABCDEF FEDCBA1234567890 568367393472639 1010 000 067
-    # 1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 000 409
-    # 1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 050 CVV248 or CVC409
-    # 1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 101 CVV501 or CVC409
-    # 1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 102 CVV206 or CVC409
+    cases = []
+              #  Component 1      Component 2      PAN                 EXP  SCode  CVC
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5656565656565656    1010 ___   922 }
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5656565656565656    1010 000   922 }
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683739237489383838 1010 000   367 }
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 568367393472639     1010 000   067 }
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 000   409 }
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 050   CVV248 or CVC409 }
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 101   CVV501 or CVC409 }
+    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 102   CVV206 or CVC409 }
 
     kl = "0123456789ABCDEF" 
     kr = "FEDCBA1234567890"
@@ -178,20 +176,6 @@ class TestHSMR < Test::Unit::TestCase
       assert_equal c[5].to_i, cvv.to_i
 
       #puts "#{pin} == #{c[2]} ? #{pin.to_i == c[2].to_i} | #{pvv} == #{c[3]} ? #{pvv.to_i == c[3].to_i}"
-      #
     end
   end
-
-  #def cvv_generation
-  #  keya=HSMR::Key.new("0123456789ABCDEF") 
-  #  keyb=HSMR::Key.new("FEDCBA1234567890") 
-  #  key =HSMR::Key.new("0123456789ABCDEFFEDCBA1234567890")
-#
-#    pan="4509494222049051"
-#    exp="0907"
-#    svc="101000000000"
-#    res="271"
-#    r=HSMR::cvv(keya, keyb, pan, exp, svc)
-#    assert_equal res, r
-#  end
 end

@@ -8,6 +8,6 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-#task :test
-#
-#task :default => :test
+task :test
+
+task :default => :test

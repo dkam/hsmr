@@ -33,6 +33,7 @@ module HSMR
   end
 
   def odd_parity?
+    # http://www.cryptosys.net/3des.html
     # http://csrc.nist.gov/publications/nistpubs/800-67/SP800-67.pdf
     #
     # The eight error detecting bits are set to make the parity of each 8-bit 

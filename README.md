@@ -12,9 +12,7 @@ Installation
 Usage
 ---------
 
-    require './lib/hsmr'
-    require './lib/key'
-    require './lib/component'
+    require 'hsmr'
 
     # Create a Key
     > key=HSMR::Key.new("4CA2161637D0133E5E151AEA45DA2A12")

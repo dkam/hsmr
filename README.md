@@ -7,7 +7,7 @@ are implemented for your education or for testing purposes and should not be use
 Installation
 -------------
 
-One day I'll learn how to make gems. Until then, git clone is the only way to use this softawre.
+    gem install hsmr
 
 Usage
 ---------

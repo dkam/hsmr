@@ -11,8 +11,8 @@ module HSMR
   ## Mixin functionality
   
   def kcv()
-    des = OpenSSL::Cipher::Cipher.new("des-cbc") if @key.length == 8
-    des = OpenSSL::Cipher::Cipher.new("des-ede-cbc") if @key.length == 16
+    des = OpenSSL::Cipher.new("des-cbc") if @key.length == 8
+    des = OpenSSL::Cipher.new("des-ede-cbc") if @key.length == 16
     des.encrypt
     des.key=@key
     des.update("\x00"*8).unpack('H*').first[0...6].upcase
@@ -59,9 +59,9 @@ module HSMR
     unless key.length == 8 || key.length == 16 || key.length ==24
       raise TypeError, "key length should be 8, 16 or 24 bytes" 
     end
-    des = OpenSSL::Cipher::Cipher.new("des-cbc") if key.length == 8
-    des = OpenSSL::Cipher::Cipher.new("des-ede-cbc") if key.length == 16
-    des = OpenSSL::Cipher::Cipher.new("des-ede3-cbc") if key.length == 24
+    des = OpenSSL::Cipher.new("des-cbc") if key.length == 8
+    des = OpenSSL::Cipher.new("des-ede-cbc") if key.length == 16
+    des = OpenSSL::Cipher.new("des-ede3-cbc") if key.length == 24
 
     des.encrypt
     des.key=key.key
@@ -136,7 +136,7 @@ module HSMR
 
   def self.encrypt_pin(key, pin)
     @pin = pin.unpack('a2'*(pin.length/2)).map{|x| x.hex}.pack('c'*(pin.length/2))
-    des = OpenSSL::Cipher::Cipher.new("des-ede")
+    des = OpenSSL::Cipher.new("des-ede")
     des.encrypt
     des.key=key.key
     return des.update(@pin).unpack('H*').first.upcase
@@ -144,7 +144,7 @@ module HSMR
   
   def self.decrypt_pin(key, pinblock)
     @pinblock = pinblock.unpack('a2'*(pinblock.length/2)).map{|x| x.hex}.pack('c'*(pinblock.length/2))
-    des = OpenSSL::Cipher::Cipher.new("des-ede")
+    des = OpenSSL::Cipher.new("des-ede")
     des.decrypt
     des.padding=0
     des.key=key.key
@@ -158,7 +158,7 @@ module HSMR
     validation_data = account.unpack('a2'*(account.length/2)).map{|x| x.hex}.pack('c'*(account.length/2))
 
     #des = OpenSSL::Cipher::Cipher.new("des-ede-cbc")
-    des = OpenSSL::Cipher::Cipher.new("des-cbc")
+    des = OpenSSL::Cipher.new("des-cbc")
     des.encrypt
     des.key=key.key
     return HSMR::decimalise(des.update(validation_data).unpack('H*').first, :ibm, dtable)[0...plength]
@@ -194,7 +194,7 @@ module HSMR
   def self.pvv(key, account, pvki, pin)
     tsp = account.to_s[4,11] + pvki.to_s + pin.to_s
     @tsp = tsp.unpack('a2'*(tsp.length/2)).map{|x| x.hex}.pack('c'*(tsp.length/2))
-    des = OpenSSL::Cipher::Cipher.new("des-ede")
+    des = OpenSSL::Cipher.new("des-ede")
     des.encrypt
     des.key=key.key
     result = des.update(@tsp).unpack('H*').first.upcase

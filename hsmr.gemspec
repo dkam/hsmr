@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.authors     = ["Dan Milne"]
   s.email       = ["d@nmilne.com"]
   s.homepage    = ""
+  s.homepage    = 'https://github.com/dkam/hsmr'
   s.summary     = %q{HSM commands in Ruby}
   s.description = %q{A collection of methods usually implemented in a HSM (Hardware Security Module)}
 
-  s.rubyforge_project = "hsmr"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

@@ -55,5 +55,6 @@ Development
 * Pull requests are awesome! Please include test::unit tests
 
 License
+-------
 
 The gem is available as open source under the terms of the MIT License.

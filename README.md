@@ -54,11 +54,6 @@ Development
 * Report issues on GitHub Issues.
 * Pull requests are awesome! Please include test::unit tests
 
-Author
-==========
-
-Dan Milne, http://da.nmilne.com, http://booko.com.au
-
 Copyright
 ----------
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hsmr (0.0.1)
+    hsmr (0.0.2)
 
 GEM
   remote: https://rubygems.org/
@@ -34,10 +34,10 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
-  factory_bot
-  guard-test
+  factory_bot (~> 6)
+  guard-test (~> 2)
   hsmr!
-  rake
+  rake (~> 13)
 
 BUNDLED WITH
    2.2.17

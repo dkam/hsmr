@@ -54,7 +54,6 @@ Development
 * Report issues on GitHub Issues.
 * Pull requests are awesome! Please include test::unit tests
 
-Copyright
-----------
+License
 
-Copyright (c) 2010 Dan Milne. See LICENSE for details.
+The gem is available as open source under the terms of the MIT License.

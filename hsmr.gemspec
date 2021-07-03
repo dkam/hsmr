@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/dkam/hsmr'
   s.summary     = %q{HSM commands in Ruby}
   s.description = %q{A collection of methods usually implemented in a HSM (Hardware Security Module)}
-
+  s.license     = 'MIT'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   # s.add_development_dependency "rspec"
   # s.add_runtime_dependency "rest-client"
   
-  s.add_development_dependency "rake"
-  s.add_development_dependency "guard-test"
-  s.add_development_dependency "factory_bot"
+  s.add_development_dependency "rake", '~> 13'
+  s.add_development_dependency "guard-test", "~> 2"
+  s.add_development_dependency "factory_bot", "~> 6"
 end

@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
   
   s.add_development_dependency "rake"
   s.add_development_dependency "guard-test"
-  s.add_development_dependency "factory_girl"
+  s.add_development_dependency "factory_bot"
 end

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TestHSMR < Test::Unit::TestCase
+class TestHSMR < Minitest::Test
 
   def test_generate_a_component 
 	  component_1 = HSMR::Component.new(nil, HSMR::SINGLE)
@@ -86,11 +86,11 @@ class TestHSMR < Test::Unit::TestCase
 
     # Test determining the parity
     parity.each do |pair|
-      assert_equal true,  HSMR::Key.new(pair[0]).odd_parity?
-      assert_equal false, HSMR::Key.new(pair[1]).odd_parity?
+      assert HSMR::Key.new(pair[0]).odd_parity?
+      refute HSMR::Key.new(pair[1]).odd_parity?
 
-      assert_equal true,  HSMR::Component.new(pair[0]).odd_parity?
-      assert_equal false, HSMR::Component.new(pair[1]).odd_parity?
+      assert HSMR::Component.new(pair[0]).odd_parity?
+      refute HSMR::Component.new(pair[1]).odd_parity?
     end
 
     # Test converting even to odd parity
@@ -116,22 +116,27 @@ class TestHSMR < Test::Unit::TestCase
   end
 
   def test_CVC_CVC2_calculations
+    # doc/CVC.examples.txt. This test previously built the table below and then
+    # asserted nothing at all.
+    ka = HSMR::Key.new("1234567890ABCDEF")
+    kb = HSMR::Key.new("FEDCBA1234567890")
+
+              #  PAN                 EXP  SCode CVC
     cases = []
-              #  Component 1      Component 2      PAN                 EXP  SCode  CVC
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5656565656565656    1010 ___   922 }
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5656565656565656    1010 000   922 }
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683739237489383838 1010 000   367 }
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 568367393472639     1010 000   067 }
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 000   409 }
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 050   CVV248 or CVC409 }
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 101   CVV501 or CVC409 }
-    cases << %W{ 1234567890ABCDEF FEDCBA1234567890 5683673934726394    1010 102   CVV206 or CVC409 }
+    cases << %W{ 5656565656565656    1010 ""    922 }
+    cases << %W{ 5656565656565656    1010 000   922 }
+    cases << %W{ 5683739237489383838 1010 000   367 }
+    cases << %W{ 568367393472639     1010 000   067 }
+    cases << %W{ 5683673934726394    1010 000   409 }
+    cases << %W{ 5683673934726394    1010 050   248 }
+    cases << %W{ 5683673934726394    1010 101   501 }
+    cases << %W{ 5683673934726394    1010 102   206 }
 
-    kl = "0123456789ABCDEF" 
-    kr = "FEDCBA1234567890"
-
-
-    #HSMR.cvv(kl, kr, "4509494222049051", "0907", "1010")
+    cases.each do |pan, exp, svc, expected|
+      svc = "" if svc == %q{""}
+      assert_equal expected, HSMR::cvv(ka, kb, pan, exp, svc),
+                   "PAN #{pan} (#{pan.length} digits), service code #{svc.inspect}"
+    end
   end
 
   def test_PIN_PVV_CVV_and_CVV2_generation
@@ -178,5 +183,145 @@ class TestHSMR < Test::Unit::TestCase
 
       #puts "#{pin} == #{c[2]} ? #{pin.to_i == c[2].to_i} | #{pvv} == #{c[3]} ? #{pvv.to_i == c[3].to_i}"
     end
+  end
+  def test_key_rejects_unusable_input
+    # Previously any unexpected type silently returned a freshly generated
+    # random key rather than raising.
+    assert_raises(TypeError)     { HSMR::Key.new(123) }
+    assert_raises(TypeError)     { HSMR::Key.new(:oops) }
+    assert_raises(TypeError)     { HSMR::Component.new(123) }
+    assert_raises(ArgumentError) { HSMR::Key.new([]) }
+  end
+
+  def test_key_generates_a_usable_key_when_given_nothing
+    key = HSMR::Key.new
+    assert_equal 16, key.length
+    assert_equal 16, key.key.length
+    assert_match(/\A[0-9A-F ]+\z/, key.to_s)
+
+    assert_equal 8, HSMR::Key.new(nil, HSMR::SINGLE).length
+    assert_equal 24, HSMR::Key.new(nil, HSMR::TRIPLE).length
+
+    refute_equal HSMR::Key.new.to_s, HSMR::Key.new.to_s
+  end
+
+  def test_key_does_not_mutate_the_component_array_it_is_given
+    components = [HSMR::Component.new("0123456789ABCDEF"), HSMR::Component.new("FEDCBA9876543210")]
+    HSMR::Key.new(components)
+    assert_equal 2, components.length
+  end
+
+  # Vectors below are from the HSM notes in doc/ -- values produced by a real
+  # HSM, not by this library.
+
+  def test_PIN_block_encryption_matches_known_HSM_values
+    # doc/encryption.txt
+    vectors = [
+      %W{ 0123456789ABCDEFFEDCBA9876543210 1234000000000000 D4718F4CA902C2A3 },
+      %W{ 0123456789ABCDEFFEDCBA9876543210 8881000000000000 9EE1F2989B005F6A },
+      %W{ 0123456789ABCDEFFEDCBA9876543210 9254000000000000 30D7E71ADB09B2F6 },
+      %W{ 0123456789ABCDEFFEDCBA9876543210 1927000000000000 F7DE2452CC64FC6D },
+      %W{ 0123456789ABCDEFFEDCBA9876543210 8363000000000000 A947B12F1E7F345A },
+      %W{ BA942A01EC6EABCD107346CB61F4F4FE 1234000000000000 5DFA5CE9EDCF20D9 },
+      %W{ BA942A01EC6EABCD107346CB61F4F4FE 8881000000000000 9E22FC9F1539BF54 },
+      %W{ BA942A01EC6EABCD107346CB61F4F4FE 9254000000000000 B30A6DE41326C0FE },
+      %W{ BA942A01EC6EABCD107346CB61F4F4FE 1927000000000000 E905C2F4E94638B7 },
+      %W{ BA942A01EC6EABCD107346CB61F4F4FE 8363000000000000 FE18700A5357D343 },
+      %W{ 4A3DB34F255EA743ECDA19D0945ECB31 1234000000000000 77B3EAD1F9CEAB4E },
+      %W{ 4A3DB34F255EA743ECDA19D0945ECB31 8881000000000000 BF0E37A91DA9D878 },
+      %W{ 4A3DB34F255EA743ECDA19D0945ECB31 9254000000000000 43A8D24E4DAC0D5C },
+      %W{ 4A3DB34F255EA743ECDA19D0945ECB31 1927000000000000 4D367C663AB681F1 },
+      %W{ 4A3DB34F255EA743ECDA19D0945ECB31 8363000000000000 33D63EC052648F5B },
+    ]
+
+    vectors.each do |hex_key, pinblock, expected|
+      key = HSMR::Key.new(hex_key)
+      assert_equal expected, HSMR::encrypt_pin(key, pinblock)
+      assert_equal pinblock, HSMR::decrypt_pin(key, expected)
+    end
+  end
+
+  def test_setting_odd_parity_fixes_every_byte
+    # doc/parity.txt. The third pair starts with an odd byte but has even bytes
+    # later on -- odd_parity? used to check only the first byte and leave it be.
+    [%W{ 41A2AC14A90C583741A2AC14A90C5837 40A2AD15A80D583740A2AD15A80D5837 },
+     %W{ F2AEDAE3FEE90DC2921F01341F54D37F F2AEDAE3FEE90DC2921F01341F54D37F },
+     %W{ 80EFEC4895855B06B4015041C3F9F61F 80EFEC4994855B07B5015140C2F8F71F },
+     %W{ 4D3DE6AA837AA60A413DDD6CBCB12C82 4C3DE6AB837AA70B403DDC6DBCB02C83 },
+     %W{ 1E74C6914F41E5EFD9969A0B134EF819 1F75C7914F40E5EFD9979B0B134FF819 }].each do |input, expected|
+      assert_equal expected, HSMR::Key.new(input).set_odd_parity.to_s.gsub(" ", "")
+      assert HSMR::Key.new(expected).odd_parity?
+    end
+  end
+
+  def test_odd_parity_checks_every_byte_not_just_the_first
+    # First byte 0x80 is odd, but later bytes are not.
+    refute HSMR::Key.new("80EFEC4895855B06B4015041C3F9F61F").odd_parity?
+    assert_equal "even", HSMR::Key.new("80EFEC4895855B06B4015041C3F9F61F").parity
+    assert_equal "odd",  HSMR::Key.new("0123456789ABCDEF").parity
+  end
+
+  def test_double_length_key_KCV_values_from_HSM_notes
+    # doc/test values.txt and doc/HSM Stuff/me test send key.txt
+    [%W{ 23232323232323234545454545454545 3A42D7 },
+     %W{ 45454545454545452323232323232323 AC5700 },
+     %W{ 67676767676767676767676767676767 B0B563 },
+     %W{ B5199D109D46E6914AB96D6E7F7CDAA8 F0916F },
+     %W{ AE9232A20276E0D03B16EC4C2C01CBC7 FB599F },
+     %W{ 25F491A467FDF7CEB3B0E6135BA78C0D 098FA4 }].each do |hex_key, kcv|
+      assert_equal kcv, HSMR::Key.new(hex_key).kcv
+    end
+  end
+
+  def test_PVV_generation_across_PVK_indexes
+    # doc/test values.txt -- the other PVV test only ever uses PVKI 2.
+    pvk = HSMR::Key.new("0123456789ABCDEF" * 2)
+
+    assert_equal "8056", HSMR::pvv(pvk, "1234123412341234", "1", "1234")
+    assert_equal "2485", HSMR::pvv(pvk, "1234123412341234", "2", "1234")
+    assert_equal "6495", HSMR::pvv(pvk, "1234123412341234", "1", "4592")
+  end
+
+  def test_des_rejects_keys_of_the_wrong_length
+    assert_raises(ArgumentError) { HSMR.des("short", :encrypt) }
+  end
+  def test_README_examples_still_hold
+    # Every value shown in README.md, so the docs cannot drift from the code.
+    key = HSMR::Key.new("4CA2161637D0133E5E151AEA45DA2A12")
+
+    assert_equal "4CA2 1616 37D0 133E 5E15 1AEA 45DA 2A12", key.to_s
+    assert_equal "7B0898", key.kcv
+    assert_equal "even", key.parity
+    refute key.odd_parity?
+    assert_equal 8, HSMR::Key.new(nil, HSMR::SINGLE).length
+
+    # Parity bits sit outside the DES key schedule, so the kcv is unchanged
+    kcv_before = key.kcv
+    assert_equal "4CA2 1616 37D0 133E 5E15 1AEA 45DA 2A13", key.set_odd_parity.to_s
+    assert_equal kcv_before, key.kcv
+
+    c1 = HSMR::Component.new("0123456789ABCDEF")
+    c2 = HSMR::Component.new("FEDCBA9876543210")
+    assert_equal "0123 4567 89AB CDEF", c1.to_s
+    assert_equal "D5D44F", c1.kcv
+    combined = HSMR::Key.new([c1, c2])
+    assert_equal "FFFF FFFF FFFF FFFF", combined.to_s
+    assert_equal "CAAAAF", combined.kcv
+
+    zmk = HSMR::Key.new("0123456789ABCDEFFEDCBA9876543210")
+    block = HSMR.encrypt_pin(zmk, "041274FFFFFFFFFF")
+    assert_equal "CFB709CC37D9262A", block
+    assert_equal "041274FFFFFFFFFF", HSMR.decrypt_pin(zmk, block)
+
+    pgk = HSMR::Key.new("3737373737373737")
+    assert_equal "4412", HSMR.ibm3624(pgk, "5560501200002101", 4, "0123456789012345").join
+
+    pvk = HSMR::Key.new("4CA2161637D0133E5E151AEA45DA2A12")
+    assert_equal "0798", HSMR.pvv(pvk, "5999997890123412", "1", "1234")
+
+    cvk_a = HSMR::Key.new("1111111111111111")
+    cvk_b = HSMR::Key.new("1111111111111111")
+    assert_equal "317", HSMR.cvv(cvk_a, cvk_b, "5560501200002101", "1010", "0")
+    assert_equal "134", HSMR.cvv(cvk_a, cvk_b, "5560501200002101", "1010", "101")
   end
 end

@@ -1,0 +1,190 @@
+Clear component: 6DBF C180 4A01 5BAD
+Key check value: 029E 60
+
+Clear component: 5D80 0497 B319 8591
+Key check value: 3B86 C3
+
+Clear component: B0C7 7CDC 7354 97C7
+Key check value: 7A77 BC
+
+Clear component: DAE0 86FE D6EA 0BEA
+Key check value: 2E61 91
+
+Clear component: 682C 8315 F4BF FBC1
+Key check value: 62B3 36
+
+Clear component: 5715 F289 04BC B62F
+Key check value: 3CBA 88
+
+Clear component: D0C4 29AE C4A8 02B5
+Key check value: 33AF 02
+
+Clear component: 7049 D0F7 4A97 15B6
+Key check value: AC13 99
+
+Clear component: BC91 D698 157A A4E5
+Key check value: 2954 91
+
+Clear component: 64AB 8568 7A0E 322F
+Key check value: D9F7 B3
+
+Type 000:
+Clear component: 5846 15A8 F854 D9BF
+Encrypted component: 9A83 096D D1F2 8C8F
+Key check value: 6C11 2F
+Clear component: 6864 4546 F2FD D907
+Encrypted component: 131E 1EC3 0549 2288
+Key check value: E229 7F
+Clear component: BC2C DC7A A1BC B36E
+Encrypted component: 6B2D F5E7 E3EF 3449
+Key check value: 8248 D4
+
+Type 002:
+Clear component: 9113 E3DF 8C32 3752
+Encrypted component: 22D9 9A0A DB46 7F50
+Key check value: F9CC 26
+Clear component: 2C75 ECEA F8BC 4AA7
+Encrypted component: 2B65 E9E3 963D EB49
+Key check value: 8646 03
+Clear component: CD16 4F10 0B1F 088C
+Encrypted component: 47D5 CB68 5ABE 6EC7
+Key check value: C239 6D
+
+Type 402:
+Clear component: 2A04 F258 E057 674F
+Encrypted component: 8206 ABD0 E941 8DFE
+Key check value: 2DDB 13
+Clear component: 7C64 803D 2567 C4A1
+Encrypted component: 4BD5 7B29 DF60 D052
+Key check value: CB13 11
+Clear component: 9223 4019 8AAD F291
+Encrypted component: D61C 8E80 FAF3 E334
+Key check value: C30E 5C
+
+
+Clear component: ADE3 9B38 0DBC DF38 AE02 AECE 64B3 4373
+Key check value: 3002 D5
+
+Clear component: B64A EF86 460D DF5B 57B3 D53D AD37 52A1
+Key check value: 1F7C 07
+
+Clear component: 5B89 6E29 76EC 9745 15B5 238C 8CFE 3D23
+Key check value: DE78 F2
+
+Clear component: 5E61 CB20 D540 1FC7 58EC CDC8 B558 E9B9
+Key check value: FED9 57
+
+Clear component: 23DF CEB9 BF94 ADA8 91E9 580B 8C8F 5BEF
+Key check value: 9020 85
+
+Clear component: DFEF 61C8 2037 3DA4 CE9B 92CD 89E9 B334
+Key check value: E45E B7
+
+Clear component: 6746 9E4C FE83 F831 F23E 9D9E 9D9E 9DB3
+Key check value: 813B 7B
+
+Clear component: 23E5 496E DF94 0BD5 9734 B07A BF26 B9E6
+Key check value: E7C4 8F
+
+Clear component: 974F 26BC CB2A ECD5 434F 1CDC 64DF A275
+Key check value: E272 50
+
+Clear component: E57A DF5B CEA7 F42A DFD9 E554 07A2 F891
+Key check value: 50E3 F8
+
+Type 000:
+Clear component: 49A4 2676 2A5B EC9B CD8C 13EF C408 AECB
+Encrypted component: UF120 7A1F AA14 9A06 85E0 8307 C22B B572
+Key check value: 9477 27
+Clear component: 6780 E092 E6B6 61F8 C276 CEF2 0BD3 134C
+Encrypted component: U7AC4 89FC DD66 AFBE 8936 C515 1A54 30A0
+Key check value: 1EB3 2D
+Clear component: 9E40 19AD B65E B5BC 3E57 A10E 4361 3815
+Encrypted component: UFAC5 E853 5E7C F2F2 6DCF 6E06 2DD8 71BE
+Key check value: EED4 F8
+
+Type 002:
+Clear component: 6E6B C15D FD7A 9ED0 8FAD 156B 9438 452F
+Encrypted component: UA349 7A43 EE48 9FC7 7853 C69D A3A1 C9AA
+Key check value: E534 5B
+Clear component: 4F5D 400B CB8F 76CD DFA4 F1C4 4FBF F1D9
+Encrypted component: U3D3B E2E4 8D3B 994D BA32 29C8 884A 3D99
+Key check value: D7F6 7F
+Clear component: 9E45 F2D0 3461 E038 D943 CB34 674A 160B
+Encrypted component: UA539 8D0C F60E DFFA F2CF CEE6 33CC F242
+Key check value: DB64 AC
+
+Type 402:
+Clear component: 80D6 1AAB 6852 919E 3E4C E32C B376 5186
+Encrypted component: UA8D6 3BCE 003D 9B25 9999 2259 5B45 8636
+Key check value: 1671 C4
+Clear component: D57F C7F7 4646 1645 ABDC 490B C83D 3429
+Encrypted component: UC3A8 3992 3170 7DBC 074F 7E46 A36E F80F
+Key check value: 3F22 5D
+Clear component: 752A 49FB 6401 DC3D 01B5 49FD 4F79 6808
+Encrypted component: U47F6 ACFF 484A B518 64C0 10AC 6E94 F00C
+Key check value: D15A ED
+
+
+Clear component: C207 7F76 2AF7 A723 0DCB 61EC 6170 3D91 0DAD 9D32 E345 0886
+Key check value: C7E5 53
+
+Clear component: 75E0 4A34 FE45 6E04 6808 0283 515E FDD6 DF45 A751 6BCB 3204
+Key check value: E1D5 59
+
+Clear component: 79F1 F8EF C8C7 E05B 2015 3E61 F858 B97C 017C 8C97 73A1 AEE9
+Key check value: 036A 2D
+
+Clear component: B01A F751 5B4A ECCB 3D9B C789 D9C4 BF9B 3D31 64A8 9B98 613D
+Key check value: 84EA BC
+
+Clear component: 4651 3D1F 864C E9DF D304 8CE5 3119 5D9B CB61 61BF 204C 46CD
+Key check value: C1E0 15
+
+Clear component: A123 9870 DA6B 31D9 D9D5 6DD5 1351 D9B6 BCCD 381A 70CD 077A
+Key check value: 0FC7 DA
+
+Clear component: 6419 CBE3 4FEC 2515 13AD 2604 D05D 0786 BF37 83DA D05E 76A1
+Key check value: FEDD 2A
+
+Clear component: B668 5125 3D9B 757C 5237 9857 8632 4561 1534 7F02 1FDF 0E0E
+Key check value: CC93 79
+
+Clear component: 7964 0275 BAE0 4CB5 FDC2 FB79 9ECE A268 8C86 01AE 5DBA C8B9
+Key check value: 8B7F 9D
+
+Clear component: DFE5 16FD 206E 2913 91E5 A7E6 2FE0 F764 CDF7 CD43 BA46 5E3D
+Key check value: 722D AE
+
+Type 000:
+Clear component: F86D 40B6 EC6B B0DA 97CB 85BF BA45 68C1 616E 232C 8FBA 0243
+Encrypted component: T0387 0DA6 5843 2BF4 3EF9 22B7 C7A5 D105 39BD 4C1E 6023 164D
+Key check value: 3E9F 81
+Clear component: 75CE 86C7 3E51 8ABC 7515 8F86 6EB3 49EC E926 524C 5E64 E5DA
+Encrypted component: T05E3 3ED3 4E83 9CEB DD84 40E3 9F8A 4CE0 9352 3BA8 4B72 3A40
+Key check value: 73CF 47
+Clear component: D615 7CF2 0454 B53D A1FE EA9E 1FC4 F464 B364 7FC1 DABF 546B
+Encrypted component: T86A7 9C3F 113B 42D2 EB53 45B2 B16B EDAC A34F 280E 01A1 5AC3
+Key check value: 395C 1F
+
+Type 002:
+Clear component: 70B0 2A83 515B 51B9 E3CE D5B3 D6FD CB62 5E61 B0B0 CEE0 975B
+Encrypted component: TB326 89D1 E6D2 1F03 2BF7 12A9 C385 6842 2C1A CB74 702A FF38
+Key check value: 0E56 D0
+Clear component: 34B0 B33B 45D5 7675 7FEC 0826 9151 B3BF 0186 F4DC 438A C751
+Encrypted component: TC3DB 7BF7 E2C6 6044 CBE5 F926 A6C4 58FE 9D3A 71E8 DB23 6A4B
+Key check value: 68E6 56
+Clear component: 1A3B 34B6 E602 9146 2529 5D85 1340 854F 983E 3D51 EA45 BCC7
+Encrypted component: TA4B8 3B29 5DDF E64E 5103 FA77 917A 1D2C 38B9 A3D6 8C7F 93A7
+Key check value: 6B10 C5
+
+Type 402:
+Clear component: A4BC 89CE 642F 7CE5 FDEF 346E 3E13 5DE6 67DA 1961 3131 D6D6
+Encrypted component: T2E54 A4E0 94B1 DD2E D9CA D9A9 C799 5EA1 3A14 791F C03D 10C5
+Key check value: 5D47 66
+Clear component: E9B5 7C8C 7686 7FBA 529D 5EA2 7C6D 5701 2026 C2E9 C1E3 046D
+Encrypted component: T2FBA B8DE 6A59 8934 232F B8DF 5B39 4321 AC74 F627 8BD6 88DD
+Key check value: DDD1 BB
+Clear component: E6A4 ABD5 0DFB 9198 D051 613E 2902 AD9D 5107 EF7C 2A52 B9F8
+Encrypted component: T3DEB 8433 0786 CB0F 598D D1B8 C164 5E24 A313 5B06 9FCC 9275
+Key check value: A34B D3

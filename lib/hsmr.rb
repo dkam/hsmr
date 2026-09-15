@@ -1,4 +1,5 @@
 require 'openssl'
+require 'securerandom'
 require 'hsmr/component'
 require 'hsmr/key'
 
@@ -8,18 +9,36 @@ module HSMR
   DOUBLE=128
   TRIPLE=192
 
+  # Returns a DES cipher, keyed and set to :encrypt or :decrypt, in :cbc (the
+  # default) or :ecb mode.
+  #
+  # Single DES ("des-cbc" / "des-ecb") moved into OpenSSL 3's legacy provider
+  # and is not available by default. Triple DES with K1=K2=K3 is identical to
+  # single DES, so single length keys are widened to 24 bytes and run through
+  # des-ede3 instead.
+  def self.des(key, direction, mode = :cbc)
+    algorithm, material = case key.length
+                          when 8  then ["des-ede3", key * 3]
+                          when 16 then ["des-ede",  key]
+                          when 24 then ["des-ede3", key]
+                          else raise ArgumentError, "key length should be 8, 16 or 24 bytes, got #{key.length}"
+                          end
+
+    des = OpenSSL::Cipher.new(mode == :cbc ? "#{algorithm}-cbc" : algorithm)
+    direction == :decrypt ? des.decrypt : des.encrypt
+    des.key = material
+    des
+  end
+
   ## Mixin functionality
   
   def kcv()
-    des = OpenSSL::Cipher.new("des-cbc") if @key.length == 8
-    des = OpenSSL::Cipher.new("des-ede-cbc") if @key.length == 16
-    des.encrypt
-    des.key=@key
+    des = HSMR.des(@key, :encrypt)
     des.update("\x00"*8).unpack('H*').first[0...6].upcase
   end
 
   def generate(length)
-    (0...(length/4)).collect { rand(16).to_s(16).upcase }.join
+    SecureRandom.hex(length / 8).upcase
   end
 
 
@@ -28,43 +47,25 @@ module HSMR
   end
 
   def parity
-    'even' unless odd_parity?
-    'odd'
+    odd_parity? ? 'odd' : 'even'
   end
 
   def odd_parity?
     # http://www.cryptosys.net/3des.html
     # http://csrc.nist.gov/publications/nistpubs/800-67/SP800-67.pdf
     #
-    # The eight error detecting bits are set to make the parity of each 8-bit 
-    # byte of the key odd. That is, there is an odd number of "1"s in each 8-bit byte.
+    # The eight error detecting bits are set to make the parity of each 8-bit
+    # byte of the key odd. That is, there is an odd number of "1"s in each 8-bit
+    # byte. Every byte has to be odd, not just the first one.
 
-    #3.to_s(2).count('1')
-    #@key.unpack("H2").first.to_i(16).to_s(2)
-
-    working=@key.unpack('H2'*(@key.length))
-    working.each do |o| 
-      freq = o.to_i(16).to_s(2).count('1').to_i
-      if( freq%2 == 0)
-        #puts "#{o} is #{o.to_i(16).to_s(2).count('1').to_i } - even" 
-        return false
-      else
-        return true
-        #puts "#{o} is #{o.to_i(16).to_s(2).count('1').to_i } - odd" 
-      end
-    end      
+    @key.each_byte.all? { |b| b.to_s(2).count("1").odd? }
   end
 
   def self.encrypt(data, key)
     unless key.length == 8 || key.length == 16 || key.length ==24
       raise TypeError, "key length should be 8, 16 or 24 bytes" 
     end
-    des = OpenSSL::Cipher.new("des-cbc") if key.length == 8
-    des = OpenSSL::Cipher.new("des-ede-cbc") if key.length == 16
-    des = OpenSSL::Cipher.new("des-ede3-cbc") if key.length == 24
-
-    des.encrypt
-    des.key=key.key
+    des = HSMR.des(key.key, :encrypt)
     to_hex( des.update(to_binary(data)) )
   end
 
@@ -136,18 +137,14 @@ module HSMR
 
   def self.encrypt_pin(key, pin)
     @pin = pin.unpack('a2'*(pin.length/2)).map{|x| x.hex}.pack('c'*(pin.length/2))
-    des = OpenSSL::Cipher.new("des-ede")
-    des.encrypt
-    des.key=key.key
+    des = HSMR.des(key.key, :encrypt, :ecb)
     return des.update(@pin).unpack('H*').first.upcase
   end
   
   def self.decrypt_pin(key, pinblock)
     @pinblock = pinblock.unpack('a2'*(pinblock.length/2)).map{|x| x.hex}.pack('c'*(pinblock.length/2))
-    des = OpenSSL::Cipher.new("des-ede")
-    des.decrypt
+    des = HSMR.des(key.key, :decrypt, :ecb)
     des.padding=0
-    des.key=key.key
     result = des.update(@pinblock)
     result << des.final
     result.unpack('H*').first.upcase
@@ -157,10 +154,7 @@ module HSMR
     
     validation_data = account.unpack('a2'*(account.length/2)).map{|x| x.hex}.pack('c'*(account.length/2))
 
-    #des = OpenSSL::Cipher::Cipher.new("des-ede-cbc")
-    des = OpenSSL::Cipher.new("des-cbc")
-    des.encrypt
-    des.key=key.key
+    des = HSMR.des(key.key, :encrypt)
     return HSMR::decimalise(des.update(validation_data).unpack('H*').first, :ibm, dtable)[0...plength]
     
   end
@@ -194,9 +188,7 @@ module HSMR
   def self.pvv(key, account, pvki, pin)
     tsp = account.to_s[4,11] + pvki.to_s + pin.to_s
     @tsp = tsp.unpack('a2'*(tsp.length/2)).map{|x| x.hex}.pack('c'*(tsp.length/2))
-    des = OpenSSL::Cipher.new("des-ede")
-    des.encrypt
-    des.key=key.key
+    des = HSMR.des(key.key, :encrypt, :ecb)
     result = des.update(@tsp).unpack('H*').first.upcase
     decimalise(result, :visa)[0..3].join
   end
@@ -209,8 +201,12 @@ module HSMR
     #
     #raise ArgumentError "PAN" 
 
-    data1 = pan
-    data2 = "#{exp}#{svc}".ljust(16, '0')
+    # The PAN, expiry and service code are concatenated and zero padded to 32
+    # digits, then split in half. Assuming the PAN alone fills the first half
+    # only holds for 16 digit PANs.
+    block = "#{pan}#{exp}#{svc}".ljust(32, '0')
+    data1 = block[0, 16]
+    data2 = block[16, 16]
 
     result = encrypt(data1, key_a)
     result = result.xor(data2)

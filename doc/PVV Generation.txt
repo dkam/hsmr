@@ -1,0 +1,45 @@
+137A 2C25 C198 E3EA A761 61B9 9BA4 C267
+D5BF AD64 9E4C C43D 0231 51DF C279 1CE5
+C6C5 8141 5FD4 27D7 A550 3066 59DD DE82
+
+Encrypted key: U007A 5048 DB95 31B3 0322 DA78 AB2F 85E1
+Key check value: D5BE 96
+
+Online-AUTH>pv
+
+Enter LMK id [0-9]: 0
+Enter key A: U007A 5048 DB95 31B3 0322 DA78 AB2F 85E1
+Enter PVV data block: 11111111111 1 1111
+
+PVV: 2378
+
+
+Online-AUTH>pv
+
+Enter LMK id [0-9]: 0
+Enter key A: 1E9E B964 04E5 CC30
+Enter key B: 50D2 D798 FFAF 8372
+Enter PVV data block: 11111111111 1 1111
+
+PVV: 2378
+
+Online-AUTH>pv
+
+Enter LMK id [0-9]: 0
+Enter key A: U007A 5048 DB95 31B3 0322 DA78 AB2F 85E1
+Enter PVV data block: 729382067392 1 8273
+
+Data invalid; please re-enter: 72938206739 1 8273
+
+PVV: 3490
+
+Online-AUTH>pv
+
+Enter LMK id [0-9]: 0
+Enter key A: 1E9E B964 04E5 CC30
+Enter key B: 50D2 D798 FFAF 8372
+Enter PVV data block: 72938206739 1 8273
+
+PVV: 3490
+
+Online-AUTH>

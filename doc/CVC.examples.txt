@@ -1,0 +1,55 @@
+1234567890ABCDEF FEDCBA1234567890 5656565656565656 1010 ___ 922
+1234567890ABCDEF FEDCBA1234567890 5656565656565656 1010 000 922
+1234567890ABCDEF FEDCBA1234567890 5683739237489383838 1010 000 367
+1234567890ABCDEF FEDCBA1234567890 568367393472639 1010 000 067
+1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 000 409
+1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 050 CVV248 or CVC409
+1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 101 CVV501 or CVC409
+1234567890ABCDEF FEDCBA1234567890 5683673934726394 1010 102 CVV206 or CVC409
+
+CVV Calculator
+
+
+The CVV calculator takes a card number, expiration date and the service code and calculates the CVV that is recorded on the cards magnetic stripe and the CVC that is printed on the signature panel of the card. The algorithm is identical for both values. The only difference is that the service code from the cards magnetic stripe is included in the CVV calculation and not the CVC calculation.
+
+CVV/CVC Algorithm
+
+The CVV algorithm is essentially an ANSI X90.19 MAC calculation over the data that is followed by an extract of numeric digits to create a three digit CVV or CVC. American Express cards use a four digit result. To calculate the CVV or CVC the Card number and expiration date are concatenated. To produce a CVV the service code is also concatenated. The data block is padded with zeros to 128 bits (32 digits). The first 16 digits are encrypted with the left half of the key, the result is exclusively Ored with the remaining 16 digit and this value is triple DES encrypted with the double length key.
+
+The resulting data is scanned from left to right and the first three numeric digits (Four for Amex Cards) is the CVV/CVC. If there are not enough numeric digits, the data is re scanned selecting the Hex digits and subtracting 9 from them until the 3 or 4 digits are found.
+
+Using the CVV/CVC Calculator
+
+To use the calculator, enter the two halves of the CVV key, the card number, expiration date and the Service Code. Note that if the service code is not entered, then only the CVC is displayed.
+
+CVV Algorithm sample
+
+The Data block is made up of the Card number, expiration data and the service code.
+
+4509494222049051 0907101000000000
+
+The first 16 digits are encrypted with the left half of the key
+
+0123456789ABCDEF
+
+Giving
+
+0CB2C179073130CD
+
+This is Exclusive Ored with the second 16 digits giving:
+
+05B5D169073130CD
+
+Which is triple DES encrypted with the full key giving:
+
+CE271F02149BC883
+
+The result is scanned from left to right looking for the first four digits that become the PVV:
+
+CE271F02149BC883
+
+The CVV is therefore 271. As the Service code is not part of the input for the calculation, the result will therefore be different.
+
+
+----
+Use the VISA CVV Service Generate callable service to generate a VISA Card Verification Value (CVV) or MasterCard Card Verification Code (CVC) as defined for track 2. This service generates a CVV that is based upon the information that the PAN_data, the expiration_date, and the service_code parameters provide. The service uses the Key-A and the Key-B keys to cryptographically process this information. Key-A and Key-B can be single-length DATA or MAC keys. If the requested CVV is shorter than 5 characters, the CVV is padded on the right by space characters. The CVV is returned in the 5-byte variable that the CVV_value parameter identifies. When you verify a CVV, compare the result to the value that the CVV_value supplies
